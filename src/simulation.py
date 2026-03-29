@@ -105,7 +105,7 @@ html, body, [class*="css"] {
 /* ── Tabs ── */
 [data-testid="stTabs"] button {
     font-family: 'Syne', sans-serif !important;
-    font-size: 14px !important;
+    font-size: 16px !important;
     font-weight: 600 !important;
     letter-spacing: 0.1em !important;
     text-transform: uppercase !important;
@@ -187,7 +187,7 @@ label, .stMarkdown p { color: #5A6278 !important; }
     opacity: 0.6;
 }
 .metric-label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -196,13 +196,13 @@ label, .stMarkdown p { color: #5A6278 !important; }
 }
 .metric-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 34px;
+    font-size: 40px;
     font-weight: 500;
     color: #E8ECF4;
     line-height: 1;
 }
 .metric-sub {
-    font-size: 13px;
+    font-size: 14px;
     color: #3D4460;
     margin-top: 6px;
     font-weight: 400;
@@ -210,7 +210,7 @@ label, .stMarkdown p { color: #5A6278 !important; }
 
 /* ── Section header ── */
 .section-header {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -243,7 +243,7 @@ label, .stMarkdown p { color: #5A6278 !important; }
     background: rgba(79, 142, 247, 0.12);
     color: #4F8EF7;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 500;
     padding: 3px 12px;
     border-radius: 20px;
@@ -259,13 +259,13 @@ label, .stMarkdown p { color: #5A6278 !important; }
     margin-bottom: 28px;
 }
 .page-title {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 800;
     color: #E8ECF4;
     letter-spacing: -0.02em;
 }
 .page-tag {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -278,13 +278,13 @@ label, .stMarkdown p { color: #5A6278 !important; }
 
 /* ── Sidebar brand ── */
 .sidebar-brand {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 800;
     color: #E8ECF4;
     letter-spacing: -0.01em;
 }
 .sidebar-sub {
-    font-size: 13px;
+    font-size: 15px;
     color: #3D4460;
     margin-top: 2px;
     font-family: 'JetBrains Mono', monospace;
@@ -295,7 +295,7 @@ label, .stMarkdown p { color: #5A6278 !important; }
     margin: 18px 0;
 }
 .filter-label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -312,7 +312,7 @@ label, .stMarkdown p { color: #5A6278 !important; }
 }
 
 /* ── Caption ── */
-.stCaption { color: #3D4460 !important; font-size: 13px !important; }
+.stCaption { color: #3D4460 !important; font-size: 15px !important; }
 
 /* ── Spinner ── */
 [data-testid="stSpinner"] { color: #4F8EF7 !important; }
@@ -336,9 +336,9 @@ with st.sidebar:
     st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
     st.markdown('<div class="filter-label">Filters</div>', unsafe_allow_html=True)
     loan_type_filter  = st.selectbox("LOAN TYPE",         LOAN_TYPES,  label_visibility="collapsed")
-    st.markdown('<div style="font-size:13px;color:#3D4460;margin:-8px 0 6px;letter-spacing:0.08em;">LOAN TYPE</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:15px;color:#3D4460;margin:-8px 0 6px;letter-spacing:0.08em;">LOAN TYPE</div>', unsafe_allow_html=True)
     amort_type_filter = st.selectbox("AMORTIZATION TYPE", AMORT_TYPES, label_visibility="collapsed")
-    st.markdown('<div style="font-size:13px;color:#3D4460;margin:-8px 0 16px;letter-spacing:0.08em;">AMORTIZATION TYPE</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:15px;color:#3D4460;margin:-8px 0 16px;letter-spacing:0.08em;">AMORTIZATION TYPE</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
     run = st.button("▶  RUN ANALYSIS", use_container_width=True, type="primary")
@@ -379,22 +379,22 @@ elif run and not uploaded:
 # ── Chart helpers (dark theme) ────────────────────────────────────────────────
 def _fmt_y(ax):
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"₪{x:,.0f}"))
-    ax.tick_params(labelsize=10, colors='#5A6278')
+    ax.tick_params(labelsize=12, colors='#5A6278')
 
 def _fmt_x(ax):
     ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"₪{x:,.0f}"))
-    ax.tick_params(labelsize=10, colors='#5A6278')
+    ax.tick_params(labelsize=12, colors='#5A6278')
 
 def _style(ax, title):
     ax.set_facecolor(SURFACE)
-    ax.set_title(title, fontsize=12, fontweight='700', color=TEXT_MUTED,
-                 pad=12, loc='left', fontfamily='monospace')
+    ax.set_title(title, fontsize=14, fontweight='700', color=TEXT_MUTED,
+                 pad=14, loc='left', fontfamily='monospace')
     ax.grid(axis='y', color=GRID, linewidth=0.6, alpha=1)
     ax.set_axisbelow(True)
     for spine in ax.spines.values():
         spine.set_edgecolor(BORDER)
         spine.set_linewidth(0.8)
-    ax.tick_params(colors=TEXT_MUTED, labelsize=10)
+    ax.tick_params(colors=TEXT_MUTED, labelsize=12)
     ax.xaxis.label.set_color(TEXT_MUTED)
     ax.yaxis.label.set_color(TEXT_MUTED)
 
@@ -441,11 +441,11 @@ if st.session_state.result is not None:
         # Slider
         all_months = sorted(result['Month'].dt.to_pydatetime().tolist())
         st.markdown('<div class="slider-container">', unsafe_allow_html=True)
-        st.markdown('<div style="font-size:13px;font-weight:700;letter-spacing:0.12em;color:#3D4460;margin-bottom:6px;">TIME HORIZON CUTOFF</div>', unsafe_allow_html=True)
+        st.markdown('<div style="font-size:15px;font-weight:700;letter-spacing:0.12em;color:#3D4460;margin-bottom:6px;">TIME HORIZON CUTOFF</div>', unsafe_allow_html=True)
         cutoff_idx = st.slider("cutoff", 0, len(all_months)-1, len(all_months)-1,
                                format="%d", label_visibility="collapsed")
         cutoff_date = all_months[cutoff_idx]
-        st.markdown(f'<span style="font-size:12px;color:#5A6278;">Showing up to</span><span class="cutoff-badge">{cutoff_date.strftime("%b %Y")}</span>',
+        st.markdown(f'<span style="font-size:15px;color:#5A6278;">Showing up to</span><span class="cutoff-badge">{cutoff_date.strftime("%b %Y")}</span>',
                     unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -482,72 +482,66 @@ if st.session_state.result is not None:
         _metric(c4, "Active Periods",  str(len(result_cut)),       "months with cashflow", TEXT_MUTED)
         _metric(c5, "Peak Month",      peak_month,                 "highest single month", AMBER)
 
-        # Charts row 1
+        # Charts — stacked vertically, full width
         _section("Cash Flow Analysis")
-        col_l, col_r = st.columns(2)
 
-        with col_l:
-            fig, ax = plt.subplots(figsize=(7, 3.6))
-            fig.patch.set_facecolor(SURFACE)
-            width = max(8, 500 / max(len(result_cut), 1))
-            ax.bar(result_cut['Month'], result_cut['Total Monthly Repayment'],
-                   color=ACCENT, width=width, alpha=0.85, zorder=3)
-            if cutoff_idx < len(all_months) - 1:
-                ax.axvline(cutoff_date, color=AMBER, linewidth=1.2, linestyle='--', alpha=0.7, zorder=4)
-            _style(ax, 'MONTHLY CASH FLOW')
-            ax.set_xlabel('Month', fontsize=10); ax.set_ylabel('Amount (₪)', fontsize=10)
-            ax.tick_params(axis='x', rotation=45, labelsize=7)
-            _fmt_y(ax); fig.tight_layout(); st.pyplot(fig); plt.close()
+        fig, ax = plt.subplots(figsize=(14, 5))
+        fig.patch.set_facecolor(SURFACE)
+        width = max(8, 500 / max(len(result_cut), 1))
+        ax.bar(result_cut['Month'], result_cut['Total Monthly Repayment'],
+               color=ACCENT, width=width, alpha=0.85, zorder=3)
+        if cutoff_idx < len(all_months) - 1:
+            ax.axvline(cutoff_date, color=AMBER, linewidth=1.4, linestyle='--', alpha=0.7, zorder=4)
+        _style(ax, 'MONTHLY CASH FLOW')
+        ax.set_xlabel('Month', fontsize=13); ax.set_ylabel('Amount (₪)', fontsize=13)
+        ax.tick_params(axis='x', rotation=45, labelsize=11)
+        _fmt_y(ax); fig.tight_layout(); st.pyplot(fig); plt.close()
 
-        with col_r:
-            fig, ax = plt.subplots(figsize=(7, 3.6))
-            fig.patch.set_facecolor(SURFACE)
-            ax.plot(result['Month'], result['Cumulative Repayment'],
-                    color=BORDER2, linewidth=1.2, zorder=2)
-            ax.plot(result_cut['Month'], result_cut['Cumulative Repayment'],
-                    color=GREEN, linewidth=2, marker='o', markersize=2.5, zorder=3)
-            ax.fill_between(result_cut['Month'], result_cut['Cumulative Repayment'],
-                            alpha=0.07, color=GREEN, zorder=2)
-            if cutoff_idx < len(all_months) - 1:
-                ax.axvline(cutoff_date, color=AMBER, linewidth=1.2, linestyle='--', alpha=0.7, zorder=4)
-            _style(ax, 'CUMULATIVE REPAYMENT')
-            ax.set_xlabel('Month', fontsize=10); ax.set_ylabel('Cumulative (₪)', fontsize=10)
-            ax.tick_params(axis='x', rotation=45, labelsize=7)
-            _fmt_y(ax); fig.tight_layout(); st.pyplot(fig); plt.close()
+        fig, ax = plt.subplots(figsize=(14, 5))
+        fig.patch.set_facecolor(SURFACE)
+        ax.plot(result['Month'], result['Cumulative Repayment'],
+                color=BORDER2, linewidth=1.5, zorder=2)
+        ax.plot(result_cut['Month'], result_cut['Cumulative Repayment'],
+                color=GREEN, linewidth=2.5, marker='o', markersize=3, zorder=3)
+        ax.fill_between(result_cut['Month'], result_cut['Cumulative Repayment'],
+                        alpha=0.07, color=GREEN, zorder=2)
+        if cutoff_idx < len(all_months) - 1:
+            ax.axvline(cutoff_date, color=AMBER, linewidth=1.4, linestyle='--', alpha=0.7, zorder=4)
+        _style(ax, 'CUMULATIVE REPAYMENT')
+        ax.set_xlabel('Month', fontsize=13); ax.set_ylabel('Cumulative (₪)', fontsize=13)
+        ax.tick_params(axis='x', rotation=45, labelsize=11)
+        _fmt_y(ax); fig.tight_layout(); st.pyplot(fig); plt.close()
 
-        # Charts row 2
+        # Charts — Portfolio Breakdown
         _section("Portfolio Breakdown")
-        col_l2, col_r2 = st.columns(2)
         df_all = filtered_master[
             (filtered_master['Payment Number'] != 0) &
             (filtered_master['Date'] <= cutoff_date)
         ]
 
-        with col_l2:
-            by_type = df_all.groupby('Loan Type')['Total Monthly Repayment'].sum().sort_values(ascending=True)
-            fig, ax = plt.subplots(figsize=(7, 3.6)); fig.patch.set_facecolor(SURFACE)
-            palette = [ACCENT, ACCENT2, GREEN, AMBER, RED, '#C0C0C0', '#80D0FF']
-            bars = ax.barh(by_type.index, by_type.values,
-                           color=palette[:len(by_type)], height=0.5, alpha=0.9, zorder=3)
-            _style(ax, 'BY LOAN TYPE'); ax.set_xlabel('Total Repayment (₪)', fontsize=10)
-            ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
-            _fmt_x(ax)
-            for bar, val in zip(bars, by_type.values):
-                ax.text(val*1.01, bar.get_y()+bar.get_height()/2,
-                        f"₪{val:,.0f}", va='center', fontsize=7, color=TEXT_MUTED)
-            fig.tight_layout(); st.pyplot(fig); plt.close()
+        by_type = df_all.groupby('Loan Type')['Total Monthly Repayment'].sum().sort_values(ascending=True)
+        fig, ax = plt.subplots(figsize=(14, 5)); fig.patch.set_facecolor(SURFACE)
+        palette = [ACCENT, ACCENT2, GREEN, AMBER, RED, '#C0C0C0', '#80D0FF']
+        bars = ax.barh(by_type.index, by_type.values,
+                       color=palette[:len(by_type)], height=0.55, alpha=0.9, zorder=3)
+        _style(ax, 'BY LOAN TYPE'); ax.set_xlabel('Total Repayment (₪)', fontsize=13)
+        ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
+        _fmt_x(ax)
+        for bar, val in zip(bars, by_type.values):
+            ax.text(val*1.01, bar.get_y()+bar.get_height()/2,
+                    f"₪{val:,.0f}", va='center', fontsize=11, color=TEXT_MUTED)
+        fig.tight_layout(); st.pyplot(fig); plt.close()
 
-        with col_r2:
-            by_amort = df_all.groupby('Amortization Type')['Total Monthly Repayment'].sum().sort_values(ascending=False)
-            fig, ax = plt.subplots(figsize=(7, 3.6)); fig.patch.set_facecolor(SURFACE)
-            bars2 = ax.bar(by_amort.index, by_amort.values,
-                           color=AMORT_COLORS[:len(by_amort)], width=0.45, alpha=0.9, zorder=3)
-            _style(ax, 'BY AMORTIZATION TYPE'); ax.set_ylabel('Total Repayment (₪)', fontsize=10)
-            _fmt_y(ax)
-            for bar, val in zip(bars2, by_amort.values):
-                ax.text(bar.get_x()+bar.get_width()/2, val*1.015,
-                        f"₪{val:,.0f}", ha='center', fontsize=7, color=TEXT_MUTED)
-            fig.tight_layout(); st.pyplot(fig); plt.close()
+        by_amort = df_all.groupby('Amortization Type')['Total Monthly Repayment'].sum().sort_values(ascending=False)
+        fig, ax = plt.subplots(figsize=(14, 5)); fig.patch.set_facecolor(SURFACE)
+        bars2 = ax.bar(by_amort.index, by_amort.values,
+                       color=AMORT_COLORS[:len(by_amort)], width=0.45, alpha=0.9, zorder=3)
+        _style(ax, 'BY AMORTIZATION TYPE'); ax.set_ylabel('Total Repayment (₪)', fontsize=13)
+        _fmt_y(ax)
+        for bar, val in zip(bars2, by_amort.values):
+            ax.text(bar.get_x()+bar.get_width()/2, val*1.015,
+                    f"₪{val:,.0f}", ha='center', fontsize=11, color=TEXT_MUTED)
+        fig.tight_layout(); st.pyplot(fig); plt.close()
 
         # Table
         _section("Aggregated Schedule")
@@ -577,7 +571,7 @@ if st.session_state.result is not None:
             </div>
         """, unsafe_allow_html=True)
 
-        st.markdown('<p style="color:#3D4460;font-size:12px;margin-bottom:24px;font-family:\'JetBrains Mono\',monospace;">Fill in NOI parameters per loan → Run Simulation → Review risk indices</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#3D4460;font-size:15px;margin-bottom:24px;font-family:\'JetBrains Mono\',monospace;">Fill in NOI parameters per loan → Run Simulation → Review risk indices</p>', unsafe_allow_html=True)
 
         # Build params table
         loan_summary = (
@@ -633,7 +627,7 @@ if st.session_state.result is not None:
                     'avg_Duration':       round(sim_results['Duration (months)'].mean(), 2),
                     'loans_above_1_DSCR': int((sim_results['DSCR'] >= 1).sum()),
                     'loans_below_1_DSCR': int((sim_results['DSCR'] <  1).sum()),
-                    'high_ltv_loans':     int((sim_results['Max LTV (%)'] > 75).sum()),
+                    'high_ltv_loans':     int((sim_results['Avg LTV (%)'] > 75).sum()),
                 }
                 st.session_state.sim_results = (sim_results, summary)
 
@@ -678,35 +672,32 @@ if st.session_state.result is not None:
             )
             st.dataframe(styled, use_container_width=True, hide_index=True)
 
-            # Simulation charts
+            # Simulation charts — stacked vertically, full width
             _section("Index Visualization")
-            sc1, sc2 = st.columns(2)
 
-            with sc1:
-                fig, ax = plt.subplots(figsize=(7, 3.6)); fig.patch.set_facecolor(SURFACE)
-                colors_ltv = [RED if v > 85 else AMBER if v > 75 else GREEN
-                              for v in sim_results['Avg LTV (%)']]
-                ax.barh(sim_results['Loan ID'], sim_results['Avg LTV (%)'],
-                        color=colors_ltv, height=0.5, alpha=0.9, zorder=3)
-                ax.axvline(75, color=AMBER, linewidth=1, linestyle='--', alpha=0.6)
-                ax.axvline(85, color=RED,   linewidth=1, linestyle='--', alpha=0.6)
-                _style(ax, 'AVG LTV BY LOAN (%)')
-                ax.set_xlabel('Avg LTV (%)', fontsize=10)
-                ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
-                fig.tight_layout(); st.pyplot(fig); plt.close()
+            fig, ax = plt.subplots(figsize=(14, 5)); fig.patch.set_facecolor(SURFACE)
+            colors_ltv = [RED if v > 85 else AMBER if v > 75 else GREEN
+                          for v in sim_results['Avg LTV (%)']]
+            ax.barh(sim_results['Loan ID'], sim_results['Avg LTV (%)'],
+                    color=colors_ltv, height=0.55, alpha=0.9, zorder=3)
+            ax.axvline(75, color=AMBER, linewidth=1.2, linestyle='--', alpha=0.6)
+            ax.axvline(85, color=RED,   linewidth=1.2, linestyle='--', alpha=0.6)
+            _style(ax, 'AVG LTV BY LOAN (%)')
+            ax.set_xlabel('Avg LTV (%)', fontsize=13)
+            ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
+            fig.tight_layout(); st.pyplot(fig); plt.close()
 
-            with sc2:
-                fig, ax = plt.subplots(figsize=(7, 3.6)); fig.patch.set_facecolor(SURFACE)
-                colors_dscr = [RED if v < 1.0 else AMBER if v < 1.25 else GREEN
-                               for v in sim_results['DSCR']]
-                ax.barh(sim_results['Loan ID'], sim_results['DSCR'],
-                        color=colors_dscr, height=0.5, alpha=0.9, zorder=3)
-                ax.axvline(1.0,  color=RED,   linewidth=1, linestyle='--', alpha=0.6)
-                ax.axvline(1.25, color=AMBER, linewidth=1, linestyle='--', alpha=0.6)
-                _style(ax, 'DSCR BY LOAN')
-                ax.set_xlabel('DSCR', fontsize=10)
-                ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
-                fig.tight_layout(); st.pyplot(fig); plt.close()
+            fig, ax = plt.subplots(figsize=(14, 5)); fig.patch.set_facecolor(SURFACE)
+            colors_dscr = [RED if v < 1.0 else AMBER if v < 1.25 else GREEN
+                           for v in sim_results['DSCR']]
+            ax.barh(sim_results['Loan ID'], sim_results['DSCR'],
+                    color=colors_dscr, height=0.55, alpha=0.9, zorder=3)
+            ax.axvline(1.0,  color=RED,   linewidth=1.2, linestyle='--', alpha=0.6)
+            ax.axvline(1.25, color=AMBER, linewidth=1.2, linestyle='--', alpha=0.6)
+            _style(ax, 'DSCR BY LOAN')
+            ax.set_xlabel('DSCR', fontsize=13)
+            ax.grid(axis='x', color=GRID, linewidth=0.6); ax.grid(axis='y', visible=False)
+            fig.tight_layout(); st.pyplot(fig); plt.close()
 
             _section("Export")
             buf2 = io.BytesIO()
@@ -726,7 +717,7 @@ if st.session_state.result is not None:
                 <span class="page-tag">INTEREST RATE RISK</span>
             </div>
         """, unsafe_allow_html=True)
-        st.markdown('<p style="color:#3D4460;font-size:12px;margin-bottom:20px;">6 Basel/EBA standard shocks · NII horizon 12M · EVE full-lifetime NPV</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#3D4460;font-size:15px;margin-bottom:20px;">6 Basel/EBA standard shocks · NII horizon 12M · EVE full-lifetime NPV</p>', unsafe_allow_html=True)
 
         sc_engine = st.session_state.sc_engine
 
@@ -836,40 +827,37 @@ if st.session_state.result is not None:
             )
             st.dataframe(styled_summary, use_container_width=True, hide_index=True)
 
-            # ── Charts ──
+            # ── Charts — stacked vertically, full width ──
             _section("NII & EVE Sensitivity — All Scenarios")
-            ch1, ch2 = st.columns(2)
 
-            with ch1:
-                fig, ax = plt.subplots(figsize=(7, 3.6))
-                fig.patch.set_facecolor(SURFACE)
-                sc_names = sc_summary['Scenario'].tolist()
-                nii_deltas = sc_summary['ΔNII (₪)'].tolist()
-                colors_nii = [GREEN if v >= 0 else RED for v in nii_deltas]
-                bars = ax.barh(sc_names, nii_deltas,
-                               color=colors_nii, height=0.5, alpha=0.9, zorder=3)
-                ax.axvline(0, color=TEXT_MUTED, linewidth=0.8, alpha=0.5)
-                _style(ax, 'ΔNII BY SCENARIO (₪)')
-                ax.set_xlabel('ΔNII (₪)', fontsize=10)
-                ax.grid(axis='x', color=GRID, linewidth=0.6)
-                ax.grid(axis='y', visible=False)
-                _fmt_x(ax)
-                fig.tight_layout(); st.pyplot(fig); plt.close()
+            fig, ax = plt.subplots(figsize=(14, 5))
+            fig.patch.set_facecolor(SURFACE)
+            sc_names = sc_summary['Scenario'].tolist()
+            nii_deltas = sc_summary['ΔNII (₪)'].tolist()
+            colors_nii = [GREEN if v >= 0 else RED for v in nii_deltas]
+            bars = ax.barh(sc_names, nii_deltas,
+                           color=colors_nii, height=0.55, alpha=0.9, zorder=3)
+            ax.axvline(0, color=TEXT_MUTED, linewidth=0.8, alpha=0.5)
+            _style(ax, 'ΔNII BY SCENARIO (₪)')
+            ax.set_xlabel('ΔNII (₪)', fontsize=13)
+            ax.grid(axis='x', color=GRID, linewidth=0.6)
+            ax.grid(axis='y', visible=False)
+            _fmt_x(ax)
+            fig.tight_layout(); st.pyplot(fig); plt.close()
 
-            with ch2:
-                fig, ax = plt.subplots(figsize=(7, 3.6))
-                fig.patch.set_facecolor(SURFACE)
-                eve_deltas = sc_summary['ΔEVE (₪)'].tolist()
-                colors_eve = [GREEN if v >= 0 else RED for v in eve_deltas]
-                ax.barh(sc_names, eve_deltas,
-                        color=colors_eve, height=0.5, alpha=0.9, zorder=3)
-                ax.axvline(0, color=TEXT_MUTED, linewidth=0.8, alpha=0.5)
-                _style(ax, 'ΔEVE BY SCENARIO (₪)')
-                ax.set_xlabel('ΔEVE (₪)', fontsize=10)
-                ax.grid(axis='x', color=GRID, linewidth=0.6)
-                ax.grid(axis='y', visible=False)
-                _fmt_x(ax)
-                fig.tight_layout(); st.pyplot(fig); plt.close()
+            fig, ax = plt.subplots(figsize=(14, 5))
+            fig.patch.set_facecolor(SURFACE)
+            eve_deltas = sc_summary['ΔEVE (₪)'].tolist()
+            colors_eve = [GREEN if v >= 0 else RED for v in eve_deltas]
+            ax.barh(sc_names, eve_deltas,
+                    color=colors_eve, height=0.55, alpha=0.9, zorder=3)
+            ax.axvline(0, color=TEXT_MUTED, linewidth=0.8, alpha=0.5)
+            _style(ax, 'ΔEVE BY SCENARIO (₪)')
+            ax.set_xlabel('ΔEVE (₪)', fontsize=13)
+            ax.grid(axis='x', color=GRID, linewidth=0.6)
+            ax.grid(axis='y', visible=False)
+            _fmt_x(ax)
+            fig.tight_layout(); st.pyplot(fig); plt.close()
 
             # ── Loan-level drill-down ──
             _section("Loan-Level Drill-Down")
