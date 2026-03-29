@@ -2,7 +2,6 @@ import numpy as np
 import numpy_financial as npf
 import pandas as pd
 
-
 class IndexEngine:
 
     # ── Per-loan scalar calculations ──────────────────────────────────────────
@@ -44,60 +43,65 @@ class IndexEngine:
     # ── Batch calculation over the full master DataFrame ──────────────────────
 
     def calcAll(self, master: pd.DataFrame, params: dict) -> pd.DataFrame:
-        """
-        Runs dynamic LTV (per payment row), DSCR, IRR, and Duration for every loan.
-
-        LTV is calculated per payment using the Collateral Value column — which
-        already reflects any mid-schedule appraiser revaluations — against the
-        outstanding balance (End Period Balance) at that point in time.
-        The summary LTV reported per loan is the weighted average across all periods.
-
-        Parameters
-        ----------
-        master : pd.DataFrame
-            The single master DataFrame from fileProcessor.load().
-            Must contain a 'Collateral Value' column.
-        params : dict
-            { loan_id: {'pgi': float, 'vl': float, 'opex': float} }
-            Collateral is read directly from the master — no manual input needed.
-
-        Returns
-        -------
-        pd.DataFrame with one row per loan.
-        """
         rows = []
 
         for loan_id, group in master.groupby('Loan ID'):
             p = params.get(str(loan_id), {})
 
-            loan_amount  = abs(group['Cash Flow'].iloc[0])
-            cfs          = group['Cash Flow'].tolist()
-            payments     = group[group['Payment Number'] != 0].copy()
+            # 1. סידור כרונולוגי של התשלומים חובה!
+            group = group.sort_values('Payment Number')
 
+            # 2. המרת עמודות קריטיות למספרים
+            group['Cash Flow'] = pd.to_numeric(group['Cash Flow'], errors='coerce').fillna(0)
+            
+            payments = group[group['Payment Number'] != 0].copy()
             if payments.empty:
                 continue
+                
+            payments['Balance'] = pd.to_numeric(payments['Balance'], errors='coerce').fillna(0)
 
-            debt_service = payments['Total Monthly Repayment'].mean()
+            # 3. זיהוי אם ההלוואה התחילה מהאמצע או מההתחלה
+            has_payment_zero = (group['Payment Number'] == 0).any()
 
-            # ── Dynamic LTV ───────────────────────────────────────────────────
-            # Per payment: LTV = outstanding balance / collateral value at that row.
-            # Collateral Value already reflects any mid-schedule appraiser revaluation.
-            valid = payments.dropna(subset=['End Period Balance', 'Collateral Value'])
-            valid = valid[valid['Collateral Value'] > 0]
-            valid = valid[valid['End Period Balance'] > 0]
+            if has_payment_zero:
+                # הלוואה רגילה מההתחלה
+                row_zero = group[group['Payment Number'] == 0]
+                loan_amount = float(abs(row_zero['Cash Flow'].iloc[0]))
+                cfs = group['Cash Flow'].tolist()
+                
+                # הבטחת תזרים פותח שלילי
+                if cfs[0] > 0:
+                    cfs[0] = -cfs[0]
+            else:
+                # הלוואה מהאמצע - סכום ההלוואה/ההשקעה הוא יתרת הפתיחה העדכנית
+                loan_amount = float(payments['Balance'].iloc[0]) 
+                cfs = group['Cash Flow'].tolist()
+                # הוספת התזרים השלילי לזמן 0
+                cfs = [-loan_amount] + cfs
 
+            # חישוב ההחזר החודשי הממוצע
+            if 'Total Monthly Repayment' in payments.columns:
+                debt_service = float(pd.to_numeric(payments['Total Monthly Repayment'], errors='coerce').mean())
+            elif 'Cash Flow' in payments.columns:
+                debt_service = float(payments['Cash Flow'].mean())
+            else:
+                debt_service = 0.0
+
+            # 4. חישוב Dynamic LTV (שימוש ביתרת הפתיחה - Balance)
+            valid = payments.dropna(subset=['Balance', 'Collateral Value'])
+            valid = valid[pd.to_numeric(valid['Collateral Value'], errors='coerce') > 0]
 
             if valid.empty:
-                avg_ltv    = None
-                min_ltv    = None
-                max_ltv    = None
+                avg_ltv, min_ltv, max_ltv = None, None, None
             else:
-                ltv_series = (valid['End Period Balance'] / valid['Collateral Value']) * 100
+                valid_collateral = pd.to_numeric(valid['Collateral Value'], errors='coerce')
+                ltv_series = (valid['Balance'] / valid_collateral) * 100
+                
                 avg_ltv    = round(ltv_series.mean(), 2)
                 min_ltv    = round(ltv_series.min(), 2)
                 max_ltv    = round(ltv_series.max(), 2)
 
-            # ── DSCR ──────────────────────────────────────────────────────────
+            # ── חישוב DSCR ─────────────────────────────────────────────────
             dscr = self.calcDSCR(
                 pgi=float(p.get('pgi', 0)),
                 vl=float(p.get('vl', 0)),
@@ -105,7 +109,7 @@ class IndexEngine:
                 monthly_payment=debt_service,
             )
 
-            # ── IRR & Duration ────────────────────────────────────────────────
+            # ── חישוב IRR ו-Duration ───────────────────────────────────────
             duration = self.calcDuration(cfs)
             try:
                 irr_annual, _ = self.calcIRR(cfs)
@@ -114,9 +118,9 @@ class IndexEngine:
 
             rows.append({
                 'Loan ID':           loan_id,
-                'Client':            group['Client'].iloc[0],
-                'Loan Type':         group['Loan Type'].iloc[0],
-                'Amortization Type': group['Amortization Type'].iloc[0],
+                'Client':            group['Client'].iloc[0] if 'Client' in group.columns else '',
+                'Loan Type':         group['Loan Type'].iloc[0] if 'Loan Type' in group.columns else '',
+                'Amortization Type': group['Amortization Type'].iloc[0] if 'Amortization Type' in group.columns else '',
                 'Loan Amount':       loan_amount,
                 'Avg LTV (%)':       avg_ltv,
                 'Min LTV (%)':       min_ltv,
