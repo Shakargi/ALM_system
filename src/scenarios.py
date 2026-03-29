@@ -209,20 +209,15 @@ class ScenarioEngine:
         # עוברים על כל הלוואה, מחשבים לה את התרחישים, ושומרים את הפירוט
         
         for loan_id, group in self.master.groupby('Loan ID'):
-            # חישוב בסיס
             b_nii, b_eve = self._calc_loan(group, shock_pct=0.0, is_short=True)
-            # חישוב NII עם שוק קצר
             s_nii, _ = self._calc_loan(group, shock_pct=scenario.short_shock_pct, is_short=True)
-            # חישוב EVE עם שוק ארוך
             _, s_eve = self._calc_loan(group, shock_pct=scenario.long_shock_pct, is_short=False)
 
-            # צבירה לסך התיק
             total_base_nii += b_nii
             total_base_eve += b_eve
             total_shocked_nii += s_nii
             total_shocked_eve += s_eve
 
-            # שמירת הנתונים ברמת ההלוואה הבודדת (עבור הסימולטור)
             loan_details_list.append({
                 'Loan ID': loan_id,
                 'NII Base (₪)': round(b_nii, 2),
@@ -248,7 +243,6 @@ class ScenarioEngine:
             'eve_delta':     round(total_shocked_eve - total_base_eve, 2),
             'loan_details':  loan_details_df
         }
-    # ── חישובים פנימיים ───────────────────────────────────────────────────────
 
     def _calc_portfolio(self, shock_pct: float, is_short: bool) -> tuple:
         """
@@ -269,27 +263,23 @@ class ScenarioEngine:
     def _calc_loan(self, group: pd.DataFrame, shock_pct: float, is_short: bool) -> tuple:
         """
         מחשב NII ו-EVE להלוואה בודדת עם shock נתון.
-
-        NII: סכום הוצאות ריבית ב-12 החודשים הקרובים (מהיום).
-             הלוואות משתנות מושפעות מ-short_shock.
-             הלוואות קבועות: NII לא משתנה.
-
-        EVE: NPV של כל ה-Cash Flows העתידיים.
-             הלוואות משתנות: NPV מחושב עם discount rate + shock.
-             הלוואות קבועות: NPV מחושב עם discount rate + long_shock.
         """
         is_variable = False
         if "Changing Interest" in group.columns:
-            is_variable = bool(group["Changing Interest"].iloc[0])
+            val = group["Changing Interest"].iloc[0]
+            is_variable = val in [True, 'True', 'כן', 'Yes', 1]
 
-        # סינון שורת האפס (העמדת ההלוואה) ומיון לפי תאריך
         payments = group[group['Payment Number'] != 0].copy()
         payments.sort_values(by='Date', inplace=True)
         
         if payments.empty:
             return 0.0, 0.0
 
-        today = payments['Date'].min()
+        has_zero = (group['Payment Number'] == 0).any()
+        if has_zero:
+            today = group[group['Payment Number'] == 0]['Date'].iloc[0]
+        else:
+            today = payments['Date'].iloc[0] - pd.DateOffset(months=1)
 
         # ── NII ──
         nii_cutoff = today + pd.DateOffset(months=self.NII_HORIZON_MONTHS)
@@ -297,24 +287,21 @@ class ScenarioEngine:
 
         nii = 0.0
         if not nii_rows.empty:
-            base_interest = nii_rows['Total Interest Repayment'].sum()
+            base_interest = pd.to_numeric(nii_rows['Total Interest Repayment'], errors='coerce').sum()
 
             if is_variable and is_short:
-                # מציאת התאריך הקודם לכל תשלום כדי לדעת כמה ימים היתרה צברה ריבית
                 nii_rows['Prev_Date'] = nii_rows['Date'].shift(1).fillna(today)
                 
-                # חישוב חלקיק השנה (Actual/365)
                 nii_rows['t_frac'] = (nii_rows['Date'] - nii_rows['Prev_Date']).dt.days / 365.0
                 
-                # תוספת הריבית המדויקת לכל שורת תשלום
+                nii_rows['Balance'] = pd.to_numeric(nii_rows['Balance'], errors='coerce').fillna(0)
+                
                 extra_interest = (nii_rows['Balance'] * shock_pct * nii_rows['t_frac']).sum()
                 nii = base_interest + extra_interest
             else:
                 nii = base_interest
 
-
         # ── EVE ──
-        # קביעת שיעור ההיוון השנתי (בסיסי + shock לפי סוג ההלוואה והתרחיש)
         if is_variable:
             disc_annual = self.DISCOUNT_RATE + (shock_pct if is_short else 0)
         else:
@@ -323,12 +310,12 @@ class ScenarioEngine:
         if disc_annual <= -1:
             eve = float('nan')
         else:
-            # במקום להניח מרווחים חודשיים שווים (t=1,2,3...),
-            # נחשב את הזמן המדויק שעבר (בשנים) מהיום ועד תאריך התשלום
             t_pv = (payments['Date'] - today).dt.days / 365.0
             
-            # חישוב וקטורי של הערך הנוכחי - גם מדויק יותר לתאריכים וגם הרבה יותר מהר מ-for
-            pv_values = payments['Cash Flow'] / ((1 + disc_annual) ** t_pv)
+            # וידוא שהתזרים הוא מספר
+            cf_numeric = pd.to_numeric(payments['Cash Flow'], errors='coerce').fillna(0)
+            
+            pv_values = cf_numeric / ((1 + disc_annual) ** t_pv)
             eve = pv_values.sum()
 
         return nii, eve
